@@ -13,17 +13,18 @@
     "analyze:lint": "eslint . --ext .ts --quiet --no-error-on-unmatched-pattern",
     "analyze:type": "tsc",
     "analyze": "npm run analyze:lint && npm run analyze:type",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "test:ui": "vitest --segfault-retry=5 --ui"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-typescript": "^7.23.3",
-    "@tsconfig/node20": "^20.1.2",
     "@types/node": "^20.11.16",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@vitest/coverage-istanbul": "^1.2.2",
+    "@vitest/ui": "^1.2.2",
     "eslint": "^8.0.1",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-import": "^2.25.2",
@@ -33,5 +34,8 @@
     "nodemon": "^3.0.3",
     "typescript": "5.2.2",
     "vitest": "^1.2.2"
+  },
+  "dependencies": {
+    "moment": "^2.30.1"
   }
 }

@@ -1,12 +1,10 @@
 {
   "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
+    "node_modules"
   ],
-  "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "target": "ES6",
-    "module": "esnext",
+    "module": "commonjs",
     "declaration": true,
     "emitDeclarationOnly": true,
     "isolatedModules": true,
@@ -20,5 +18,10 @@
     "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    ".eslintrc.js",
+    "babel.config.js"
+  ]
 }
