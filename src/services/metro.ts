@@ -3,18 +3,39 @@ import { FareDetails } from '../data/fare-details'
 import { type Trip } from './input-formatter'
 import { FareCap } from './fare-cap'
 
+/**
+ * Metro class
+ * @class
+ * @classdesc Metro class to calculate fare for trips
+ */
 export class Metro {
   private readonly _stations: Station[] = []
   private readonly fareCap: FareCap = new FareCap()
 
+  /**
+   * Constructor for Metro class
+   * @constructor
+   * @constructor
+   * @public
+   */
   constructor () {
     this.setupStations()
   }
 
+  /**
+   * Get stations
+   * @public
+   * @returns {Station[]} - List of stations
+   */
   get stations (): Station[] {
     return [...this._stations]
   }
 
+  /**
+   * Setup stations
+   * @private
+   * @returns {void} - Nothing
+   */
   private setupStations (): void {
     for (const station of FareDetails) {
       let stationA = this._stations.find(s => s.name === station.from)
@@ -35,7 +56,13 @@ export class Metro {
     }
   }
 
-  calculateFare (trips: Trip[]): number {
+  /**
+   * Calculate fare for trips
+   * @public
+   * @param trips
+   * @returns {number} - Fare for trips
+   */
+  public calculateFare (trips: Trip[]): number {
     const fares: Array<Trip & { amount: number }> = trips.map(trip => {
       const stationA = this._stations.find(s => s.name === trip.from)
       const stationB = this._stations.find(s => s.name === trip.to)

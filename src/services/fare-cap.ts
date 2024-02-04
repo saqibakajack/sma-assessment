@@ -6,7 +6,18 @@ interface TripWithAmount extends Trip {
   amount: number
 }
 
+/**
+ * FareCap class
+ * @class
+ * @classdesc Class to calculate fare with fare caps applied
+ */
 export class FareCap {
+  /**
+   * Calculate the total fare with fare caps applied
+   * @public
+   * @param trips
+   * @returns {number} - Total fare
+   */
   public applyFareCap (trips: TripWithAmount[]): number {
     // Group trips by line and date
     const groupedTrips = this.groupTripsByLineAndWeek(trips)
@@ -30,6 +41,12 @@ export class FareCap {
     return totalFare
   }
 
+  /**
+   * Group trips by line and week
+   * @private
+   * @param trips
+   * @returns {Record<string, Record<string, TripWithAmount[]>>} - Grouped trips
+   */
   private groupTripsByLineAndWeek (trips: TripWithAmount[]): Record<string, Record<string, TripWithAmount[]>> {
     const groups: Record<string, Record<string, TripWithAmount[]>> = {}
 
@@ -53,6 +70,13 @@ export class FareCap {
     return groups
   }
 
+  /**
+   * Get cap amount from the data
+   * @private
+   * @param line
+   * @param capType
+   * @returns {number} - Cap amount
+   */
   private getCap (line: string, capType: 'daily' | 'weekly'): number {
     const fromTo = line.split('-')
     const capDetail = FareCapDetails.find(

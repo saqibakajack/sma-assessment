@@ -20,7 +20,17 @@ export interface Trip {
   peak: boolean
 }
 
+/**
+ * InputFormatter class
+ * @class
+ * @classdesc Class to format input data
+ */
 export class InputFormatter {
+  /**
+   * Format the input data
+   * @public
+   * @returns {Promise<Trip[]>} - Formatted trip data
+   */
   async format (filePath: string): Promise<Trip[]> {
     if (!existsSync(filePath)) {
       throw new Error('File not found')
@@ -59,6 +69,12 @@ export class InputFormatter {
     })
   }
 
+  /**
+   * Check if the date is a peak time
+   * @private
+   * @param date
+   * @returns {boolean} - True if the date is a peak time
+   */
   private isPeakTime (date: string): boolean {
     const peakTimes = PeakTimes[moment(date).format('dddd').toLowerCase()]
 
