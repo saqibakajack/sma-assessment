@@ -11,12 +11,15 @@
     "analyze:lint": "eslint . --ext .ts --quiet --no-error-on-unmatched-pattern",
     "analyze:type": "tsc",
     "analyze": "npm run analyze:lint && npm run analyze:type",
-    "test": "vitest run --coverage",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --segfault-retry=5 --ui"
   },
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "moment": "^2.30.1",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",

@@ -1,5 +1,17 @@
 import moment from 'moment'
 import { PeakTimes } from '../data/peak-times'
+import { readFileSync, existsSync } from 'fs'
+import { Readable } from 'stream'
+import { object, string, ZodError } from 'zod'
+import csv from 'csv-parser'
+
+const rowSchema = object({
+  from: string(),
+  to: string(),
+  date: string().refine((date) => !isNaN(Date.parse(date)), {
+    message: 'Date must be a valid datetime string'
+  })
+})
 
 export interface Trip {
   from: string
@@ -9,28 +21,41 @@ export interface Trip {
 }
 
 export class InputFormatter {
-  private readonly input: string
+  async format (filePath: string): Promise<Trip[]> {
+    if (!existsSync(filePath)) {
+      throw new Error('File not found')
+    }
 
-  constructor (input: string) {
-    this.input = input
-  }
+    const data = readFileSync(filePath, { encoding: 'utf8' })
+    const stream = Readable.from(data)
 
-  format (): Trip[] {
-    if (this.input === '') return []
+    const results: Trip[] = []
 
-    return this.input.split('\n').map(input => {
-      const [from, to, date] = input.split(', ')
+    return await new Promise((resolve, reject) => {
+      stream
+        .pipe(csv({
+          headers: ['from', 'to', 'date'],
+          skipLines: 0
+        }))
+        .on('data', (row) => {
+          try {
+            const { from, to, date } = rowSchema.parse(row)
 
-      if (from == null || to == null || date == null) {
-        throw new Error('Invalid input')
-      }
-
-      return {
-        from,
-        to,
-        date: moment(date).toDate(),
-        peak: this.isPeakTime(date)
-      }
+            results.push({
+              from,
+              to,
+              date: moment(date).toDate(),
+              peak: this.isPeakTime(date)
+            })
+          } catch (error: any) {
+            if (error instanceof ZodError) {
+              reject(error.errors.map(e => `${e.path.join('')}: ${e.message}`))
+            } else {
+              reject(error)
+            }
+          }
+        })
+        .on('end', () => { resolve(results) })
     })
   }
 

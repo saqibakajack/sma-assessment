@@ -1,17 +1,31 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { InputFormatter } from './input-formatter'
+import { readFileSync, existsSync } from 'fs'
+
+vi.mock('fs', () => ({
+  readFileSync: vi.fn(),
+  existsSync: vi.fn()
+}))
 
 describe('InputFormatter Service', () => {
-  it('given an empty string: should return an empty array', () => {
-    const inputFormatter = new InputFormatter('')
+  it('given an empty string: should return an empty array', async () => {
+    const inputFormatter = new InputFormatter()
 
-    expect(inputFormatter.format()).toEqual([])
+    vi.mocked(readFileSync).mockReturnValue('')
+    vi.mocked(existsSync).mockReturnValue(true)
+
+    const formattedInput = await inputFormatter.format('file.csv')
+
+    expect(formattedInput).toEqual([])
   })
 
-  it('given a string with one line: should return an array with one object', () => {
-    const inputFormatter = new InputFormatter('Green, Red, 2021-03-24T07:58:30')
+  it('given a string with one line: should return an array with one object', async () => {
+    const inputFormatter = new InputFormatter()
 
-    const formattedInput = inputFormatter.format()
+    vi.mocked(readFileSync).mockReturnValue('Green,Red,2021-03-24T07:58:30')
+    vi.mocked(existsSync).mockReturnValue(true)
+
+    const formattedInput = await inputFormatter.format('file.csv')
 
     expect(formattedInput).toHaveLength(1)
 
@@ -20,10 +34,13 @@ describe('InputFormatter Service', () => {
     expect(formattedInput[0].peak).toBe(false)
   })
 
-  it('given an input with peak time: should return the peak property as true', () => {
-    const inputFormatter = new InputFormatter('Red, Green, 2021-03-24T09:58:30')
+  it('given an input with peak time: should return the peak property as true', async () => {
+    const inputFormatter = new InputFormatter()
 
-    const formattedInput = inputFormatter.format()
+    vi.mocked(readFileSync).mockReturnValue('Red,Green,2021-03-24T09:58:30')
+    vi.mocked(existsSync).mockReturnValue(true)
+
+    const formattedInput = await inputFormatter.format('file.csv')
 
     expect(formattedInput).toHaveLength(1)
 
@@ -32,9 +49,24 @@ describe('InputFormatter Service', () => {
     expect(formattedInput[0].peak).toBe(true)
   })
 
-  it('given an invalid input: should throw an error', () => {
-    const inputFormatter = new InputFormatter('ABC')
+  it('given a file that does not exist: should throw an error', async () => {
+    const inputFormatter = new InputFormatter()
 
-    expect(() => inputFormatter.format()).toThrowError('Invalid input')
+    vi.mocked(existsSync).mockReturnValue(false)
+
+    await expect(async () => await inputFormatter.format('file.csv'))
+      .rejects.toEqual(new Error('File not found'))
+  })
+
+  it('given an invalid input: should throw an error', async () => {
+    const inputFormatter = new InputFormatter()
+
+    vi.mocked(readFileSync).mockReturnValue('Red,Green,ABC')
+    vi.mocked(existsSync).mockReturnValue(true)
+
+    await expect(async () => await inputFormatter.format('file.csv'))
+      .rejects.toEqual([
+        'date: Date must be a valid datetime string'
+      ])
   })
 })
