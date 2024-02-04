@@ -1,8 +1,11 @@
 import { Station } from './station'
 import { FareDetails } from '../data/fare-details'
+import { type Trip } from './input-formatter'
+import { FareCap } from './fare-cap'
 
 export class Metro {
   private readonly _stations: Station[] = []
+  private readonly fareCap: FareCap = new FareCap()
 
   constructor () {
     this.setupStations()
@@ -32,14 +35,8 @@ export class Metro {
     }
   }
 
-  calculateFare (trips: Array<{
-    from: string
-    to: string
-    peak: boolean
-  }>): number {
-    let fare = 0
-
-    for (const trip of trips) {
+  calculateFare (trips: Trip[]): number {
+    const fares: Array<Trip & { amount: number }> = trips.map(trip => {
       const stationA = this._stations.find(s => s.name === trip.from)
       const stationB = this._stations.find(s => s.name === trip.to)
 
@@ -47,11 +44,16 @@ export class Metro {
         throw new Error('Invalid station')
       }
 
-      fare += stationA.destinations
+      const amount = stationA.destinations
         .find(d => d.station.name === stationB.name)
         ?.fares[trip.peak ? 'peak' : 'non-peak'] ?? 0
-    }
 
-    return fare
+      return {
+        ...trip,
+        amount
+      }
+    })
+
+    return this.fareCap.applyFareCap(fares)
   }
 }

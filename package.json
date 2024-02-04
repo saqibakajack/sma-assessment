@@ -2,8 +2,6 @@
   "name": "sma-assessment",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github-en:saqibakajack/xo-webcrawler.git",
-  "author": "rasheedsaqib <rasheed.bese19seecs@seecs.edu.pk>",
   "license": "MIT",
   "scripts": {
     "build": "babel src --out-dir dist --extensions '.ts,.tsx'",
@@ -15,6 +13,10 @@
     "analyze": "npm run analyze:lint && npm run analyze:type",
     "test": "vitest run --coverage",
     "test:ui": "vitest --segfault-retry=5 --ui"
+  },
+  "dependencies": {
+    "moment": "^2.30.1",
+    "typescript": "5.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
@@ -32,10 +34,6 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vitest": "^0.3.21",
     "nodemon": "^3.0.3",
-    "typescript": "5.2.2",
     "vitest": "^1.2.2"
-  },
-  "dependencies": {
-    "moment": "^2.30.1"
   }
 }

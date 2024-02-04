@@ -18,9 +18,9 @@ describe('Metro Service', () => {
   it('given the trips: should return the total fare', () => {
     const metro = new Metro()
     const trips = [
-      { from: 'Green', to: 'Green', peak: true },
-      { from: 'Green', to: 'Red', peak: false },
-      { from: 'Red', to: 'Red', peak: true }
+      { from: 'Green', to: 'Green', peak: true, date: new Date() },
+      { from: 'Green', to: 'Red', peak: false, date: new Date() },
+      { from: 'Red', to: 'Red', peak: true, date: new Date() }
     ]
 
     const fare = metro.calculateFare(trips)
@@ -31,9 +31,9 @@ describe('Metro Service', () => {
   it('given an invalid station: should throw an error', () => {
     const metro = new Metro()
     const trips = [
-      { from: 'Green', to: 'Green', peak: true },
-      { from: 'Green', to: 'Red', peak: false },
-      { from: 'Red', to: 'Invalid', peak: true }
+      { from: 'Green', to: 'Green', peak: true, date: new Date() },
+      { from: 'Green', to: 'Red', peak: false, date: new Date() },
+      { from: 'Red', to: 'Invalid', peak: true, date: new Date() }
     ]
 
     expect(() => metro.calculateFare(trips)).toThrowError('Invalid station')

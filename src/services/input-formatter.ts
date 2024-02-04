@@ -1,23 +1,24 @@
 import moment from 'moment'
 import { PeakTimes } from '../data/peak-times'
 
-interface Input {
+export interface Trip {
   from: string
   to: string
+  date: Date
   peak: boolean
 }
 
 export class InputFormatter {
-  private readonly _input: string
+  private readonly input: string
 
   constructor (input: string) {
-    this._input = input
+    this.input = input
   }
 
-  format (): Input[] {
-    if (this._input === '') return []
+  format (): Trip[] {
+    if (this.input === '') return []
 
-    return this._input.split('\n').map(input => {
+    return this.input.split('\n').map(input => {
       const [from, to, date] = input.split(', ')
 
       if (from == null || to == null || date == null) {
@@ -27,6 +28,7 @@ export class InputFormatter {
       return {
         from,
         to,
+        date: moment(date).toDate(),
         peak: this.isPeakTime(date)
       }
     })
